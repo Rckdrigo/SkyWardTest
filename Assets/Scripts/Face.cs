@@ -20,24 +20,32 @@ public enum FaceDirection
 public class Face : MonoBehaviour
 {
 	public FaceDirection direction;
-	Collider collider;
+	public int index;
+
+	public Vector3 faceDir;
+	//	Animator anim;
 
 	void Start ()
 	{
-		collider = GetComponent<Collider> ();
-		collider.isTrigger = true;
-	}
+//		anim = GetComponent<Animator> ();
 
-	void OnTriggerEnter (Collider col)
-	{
-		GetComponent<MeshRenderer> ().material.color = Color.green;
-	}
+		switch (direction) {
+		case FaceDirection.Left:
+			faceDir = Vector3.right;
+			break;
 
+		case FaceDirection.Right:
+			faceDir = Vector3.forward;
+			break;
 
-	void OnTriggerExit (Collider col)
-	{
-		GetComponent<MeshRenderer> ().material.color = Color.white;
+		case FaceDirection.Top:
+			faceDir = Vector3.up;
+			break;
+		}
+
+		faceDir *= 0.25f;
 	}
+		
 
 	//	public new FaceCollider collider;
 	//

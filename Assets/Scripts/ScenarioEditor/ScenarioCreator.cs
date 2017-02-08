@@ -7,15 +7,14 @@ public class ScenarioCreator : MonoBehaviour
 
 	[Range (1, 100)][SerializeField] private int patternCount = 10;
 	public List<Pattern> patterns;
-
-
 	private GameObject[] patternPrefabs;
+
+	public int currentFace;
 
 	// Use this for initialization
 	void Start ()
 	{
 		patternPrefabs = Resources.LoadAll <GameObject> ("Patterns");
-
 
 		for (int i = 0; i < patternCount; i++) {
 			int random = Random.Range (0, patternPrefabs.Length);
@@ -26,7 +25,8 @@ public class ScenarioCreator : MonoBehaviour
 			patterns.Add (pattern.GetComponent<Pattern> ());
 		}
 
-		ScenarioController.Instance.patterns = patterns;
+		ScenarioController.Instance.GetAllFaces (patterns);
+
 		Destroy (this);
 	}
 

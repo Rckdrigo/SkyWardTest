@@ -7,4 +7,5 @@ public class Cell : MonoBehaviour
 	public GameObject nextCellDirection;
 
 	public Face top, right, left;
+
 }
