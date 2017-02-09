@@ -34,11 +34,6 @@ public class Face : MonoBehaviour
 	public Vector3 faceDir;
 	public Vector3 initialScale;
 
-	void Start ()
-	{
-		initialScale = transform.localScale;
-		transform.localScale = Vector3.zero;
-	}
 
 	public void SetupRandomPowerUp ()
 	{
@@ -58,7 +53,7 @@ public class Face : MonoBehaviour
 	{
 		for (int i = 0; i < 20; i++) {
 			yield return new WaitForSeconds (0.01f);
-			transform.localScale = Vector3.Lerp (transform.localScale, initialScale, (float)i / 20);
+			transform.localScale = Vector3.Lerp (transform.localScale, ScenarioController.Instance.GetFaceInitialScale (direction), (float)i / 20);
 		}
 	}
 
