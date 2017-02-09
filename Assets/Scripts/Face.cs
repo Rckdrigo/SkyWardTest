@@ -32,29 +32,12 @@ public class Face : MonoBehaviour
 	public SpriteRenderer icon;
 
 	public Vector3 faceDir;
-
-
-	//	Animator anim;
+	public Vector3 initialScale;
 
 	void Start ()
 	{
-//		anim = GetComponent<Animator> ();
-//
-//		switch (direction) {
-//		case FaceDirection.Left:
-//			faceDir = Vector3.right;
-//			break;
-//
-//		case FaceDirection.Right:
-//			faceDir = Vector3.forward;
-//			break;
-//
-//		case FaceDirection.Top:
-//			faceDir = Vector3.up;
-//			break;
-//		}
-//
-//		faceDir *= 0.25f;
+		initialScale = transform.localScale;
+		transform.localScale = Vector3.zero;
 	}
 
 	public void SetupRandomPowerUp ()
@@ -71,4 +54,20 @@ public class Face : MonoBehaviour
 	}
 
 
+	public IEnumerator GrowAnimation ()
+	{
+		for (int i = 0; i < 20; i++) {
+			yield return new WaitForSeconds (0.01f);
+			transform.localScale = Vector3.Lerp (transform.localScale, initialScale, (float)i / 20);
+		}
+	}
+
+	public IEnumerator ShrinkAnimation ()
+	{
+		for (int i = 0; i < 20; i++) {
+			yield return new WaitForSeconds (0.01f);
+			transform.localScale = Vector3.Lerp (transform.localScale, Vector3.zero, (float)i / 20);
+		}
+		gameObject.SetActive (false);
+	}
 }

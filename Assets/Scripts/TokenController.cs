@@ -23,21 +23,41 @@ public class TokenController : Singleton<TokenController>
 
 	float currentAngle = 0f;
 
+	Vector3 initialPivotPosition, initialActiveTokenPosition;
+
 	void Start ()
 	{
 		initialDistance = Vector3.Distance (pivot.position, activeToken.position);
+		initialPivotPosition = pivot.position;
+		initialActiveTokenPosition = activeToken.position;
+
+		GameManager.Instance.ResetGameEvent += () => {
+			speedBonus = 0;
+			rotationAmount = 0;
+			sense = 1;
+			currentAngle = 0f;
+
+			currentFace = null;
+
+			pivot.position = initialPivotPosition;
+			activeToken.position = initialActiveTokenPosition;
+
+			pivot.up = activeToken.up = Vector3.up;
+		};
 	}
 
-	// Update is called once per frame
 	void Update ()
 	{
 		if (!GameManager.Instance.lost) {
-			if (Input.GetKeyDown (KeyCode.Space)) {
+			if ((Input.GetKeyDown (KeyCode.Space) || Input.GetMouseButtonDown (0)) && GameManager.Instance.ableToStart) {
+
+				if (!GameManager.Instance.gameStarted)
+					GameManager.Instance.FirstTap ();
 
 				var facesOnCollision = 
 					from face in ScenarioController.Instance.totalFaces
 					where (Vector3.Distance (activeToken.position, face.transform.position)) < collisionRadius
-				orderby face.index descending
+					orderby Vector3.Distance(face.transform.position, activeToken.position) descending
 					select face;
 
 				foreach (var face in facesOnCollision.ToList()) {
@@ -49,7 +69,6 @@ public class TokenController : Singleton<TokenController>
 					currentAngle = 0;
 					rotationAmount = 0;
 
-					GameManager.Instance.IncreaseScore ();
 					ScenarioController.Instance.ChangeToFace (currentFace.index);
 
 
@@ -79,7 +98,7 @@ public class TokenController : Singleton<TokenController>
 			activeToken.RotateAround (pivot.position, Vector3.up, angle);
 			currentAngle += angle;
 
-			if (currentAngle > 360) {
+			if (currentAngle > 360 && GameManager.Instance.gameStarted) {
 				rotationAmount++;
 				if (rotationAmount == maxRotationAmount)
 					GameManager.Instance.GameOver ();

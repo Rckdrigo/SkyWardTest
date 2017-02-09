@@ -7,11 +7,18 @@ public class ScenarioCreator : MonoBehaviour
 
 	[Range (1, 100)][SerializeField] private int patternCount = 10;
 	public List<Pattern> patterns;
+	[Range (1, 15)][SerializeField] private int initialFaces = 15;
+
 	private GameObject[] patternPrefabs;
+
 
 	void Start ()
 	{
 		CreateScenario ();
+		GameManager.Instance.ResetGameEvent += () => {
+			patterns.Clear ();
+			CreateScenario ();
+		};
 	}
 
 	void CreateScenario ()
@@ -28,5 +35,16 @@ public class ScenarioCreator : MonoBehaviour
 		}
 
 		ScenarioController.Instance.GetAllFaces (patterns);
+		StartCoroutine (ShowFirstFaces ());
+	}
+
+	IEnumerator ShowFirstFaces ()
+	{
+		for (int i = 0; i < initialFaces; i++) {
+			StartCoroutine (ScenarioController.Instance.totalFaces [i].GrowAnimation ());
+			yield return new WaitForSeconds (0.1f);
+		}
+
+		GameManager.Instance.ableToStart = true;
 	}
 }

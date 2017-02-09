@@ -8,13 +8,16 @@ public class UIScore : Singleton<UIScore>
 
 	public Text scoreLabel;
 
+	void Start ()
+	{
+		GameManager.Instance.ResetGameEvent += () => {
+			scoreLabel.text = "0";
+		};
+	}
+
 	public void IncreaseScore (int score)
 	{
 		scoreLabel.text = score.ToString ();
 	}
 
-	public void Reset ()
-	{
-		scoreLabel.text = "0";
-	}
 }

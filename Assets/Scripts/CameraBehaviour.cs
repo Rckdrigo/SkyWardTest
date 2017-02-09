@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraBehaviour : MonoBehaviour
 {
-    
+	public float smoothness = 3f;
 	private Vector3 initialVector;
 
 	void Start ()
@@ -13,6 +13,6 @@ public class CameraBehaviour : MonoBehaviour
 
 	void Update ()
 	{
-		transform.position = Vector3.Lerp (transform.position, TokenController.Instance.pivot.transform.position + initialVector, Time.deltaTime);
+		transform.position = Vector3.Lerp (transform.position, TokenController.Instance.pivot.transform.position + initialVector, Time.deltaTime * smoothness);
 	}
 }

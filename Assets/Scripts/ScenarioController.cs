@@ -13,6 +13,11 @@ public class ScenarioController : Singleton<ScenarioController>
 
 	public Sprite speedTexture, spinTexture;
 
+	void Start ()
+	{
+		GameManager.Instance.GameOverEvent += DestroyScenario;
+	}
+
 	List<Face> GetNextFaces (int count)
 	{
 		var nextFaces =
@@ -30,33 +35,45 @@ public class ScenarioController : Singleton<ScenarioController>
 		for (int i = 0; i < patterns.Count; i++)
 			totalFaces.AddRange (patterns [i].GetFaces (i));
 
-		for (int i = 0; i < totalFaces.Count; i++)
+		for (int i = 0; i < totalFaces.Count; i++) {
 			totalFaces [i].index = i;
+		}
 
 		ChangeToFace (0);
 	}
 
 	public void ChangeToFace (int newIndex)
 	{
+		GameManager.Instance.IncreaseScore ();
 
 		index = newIndex;
 		TokenController.Instance.activeToken.up = totalFaces [index].faceDir;
-//		List<Face> temp = GetNextFaces (nextFacesWindow);
-//
-//		for (int i = 0; i < temp.Count; i++)
-//			temp [i].GetComponent<MeshRenderer> ().material.color = Color.yellow;
 
+		List<Face> temp = GetNextFaces (nextFacesWindow);
 
+		for (int i = 0; i < temp.Count; i++) {
+			StartCoroutine (temp [i].GrowAnimation ());
+		}
 
-		var previousFaces = 
-			from face in ScenarioController.Instance.totalFaces
-			where face.index < index - 3
-			select face;
+		if (GameManager.Instance.gameStarted) {
+			var previousFaces = 
+				from face in ScenarioController.Instance.totalFaces
+				where face.transform.position.x > TokenController.Instance.pivot.position.x && face.transform.position.y < TokenController.Instance.pivot.position.y
+				select face;
 
-		foreach (var face in previousFaces.ToList()) {
-//			totalFaces.Remove (face);
-//			face.GetComponent<MeshRenderer> ().material.color = Color.red;
+			foreach (var face in previousFaces.ToList()) {
+				StartCoroutine (face.ShrinkAnimation ());
+			}
 		}
 	}
-		
+
+	public void DestroyScenario ()
+	{
+		foreach (Pattern p in patterns)
+			Destroy (p.gameObject);
+
+		patterns.Clear ();
+		totalFaces.Clear ();
+		index = 0;
+	}
 }

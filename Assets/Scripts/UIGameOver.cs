@@ -8,8 +8,14 @@ public class UIGameOver : Singleton<UIGameOver>
 
 	public GameObject gameOverLabel;
 
-	public void ShowGameOver (bool lost)
+	public void ShowGameOver ()
 	{
-		gameOverLabel.SetActive (lost);
+		gameOverLabel.SetActive (true);
+	}
+
+	public void Reset ()
+	{
+		gameOverLabel.SetActive (false);
+		GameManager.Instance.Reset ();
 	}
 }
