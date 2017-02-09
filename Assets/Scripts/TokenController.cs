@@ -69,7 +69,6 @@ public class TokenController : Singleton<TokenController>
 					currentAngle = 0;
 					rotationAmount = 0;
 
-					ScenarioController.Instance.ChangeToFace (currentFace.index);
 
 
 					if (currentFace.powerUp == PowerUpType.spin)
@@ -83,6 +82,7 @@ public class TokenController : Singleton<TokenController>
 					pivot = activeToken;
 					activeToken = temp;
 
+					ScenarioController.Instance.ChangeToFace (currentFace.index);
 					pivot.transform.position = currentFace.transform.position + currentFace.faceDir * 0.65f;
 					activeToken.transform.position = new Vector3 (activeToken.transform.position.x, pivot.transform.position.y, activeToken.transform.position.z);
 

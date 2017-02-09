@@ -58,7 +58,7 @@ public class ScenarioController : Singleton<ScenarioController>
 		if (GameManager.Instance.gameStarted) {
 			var previousFaces = 
 				from face in ScenarioController.Instance.totalFaces
-				where face.transform.position.x > TokenController.Instance.pivot.position.x && face.transform.position.y < TokenController.Instance.pivot.position.y
+				where face.transform.position.x - 0.75f > TokenController.Instance.pivot.position.x
 				select face;
 
 			foreach (var face in previousFaces.ToList()) {
