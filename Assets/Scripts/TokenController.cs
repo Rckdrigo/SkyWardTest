@@ -83,6 +83,7 @@ public class TokenController : Singleton<TokenController>
 					activeToken = temp;
 
 					ScenarioController.Instance.ChangeToFace (currentFace.index);
+
 					pivot.transform.position = currentFace.transform.position + currentFace.faceDir * 0.65f;
 					activeToken.transform.position = new Vector3 (activeToken.transform.position.x, pivot.transform.position.y, activeToken.transform.position.z);
 
@@ -113,21 +114,21 @@ public class TokenController : Singleton<TokenController>
 	public void SetTokenDirection (FaceDirection direction)
 	{
 		Vector3 newTokenDirection;
-
+	
 		switch (direction) {
 		case FaceDirection.Left:
 			newTokenDirection = Vector3.right;
 			break;
-
+	
 		case FaceDirection.Right:
 			newTokenDirection = Vector3.forward;
 			break;
-
+	
 		default:
 			newTokenDirection = Vector3.up;
 			break;
 		}
-
+	
 		pivot.transform.up = newTokenDirection;
 		activeToken.transform.up = newTokenDirection;
 	}

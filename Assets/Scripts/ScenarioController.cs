@@ -47,7 +47,7 @@ public class ScenarioController : Singleton<ScenarioController>
 		GameManager.Instance.IncreaseScore ();
 
 		index = newIndex;
-		TokenController.Instance.activeToken.up = totalFaces [index].faceDir;
+		TokenController.Instance.pivot.up = totalFaces [index].faceDir;
 
 		List<Face> temp = GetNextFaces (nextFacesWindow);
 
