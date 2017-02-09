@@ -39,7 +39,6 @@ public class ScenarioController : Singleton<ScenarioController>
 	public void ChangeToFace (int newIndex)
 	{
 
-
 		index = newIndex;
 		TokenController.Instance.activeToken.up = totalFaces [index].faceDir;
 //		List<Face> temp = GetNextFaces (nextFacesWindow);

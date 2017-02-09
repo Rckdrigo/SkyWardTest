@@ -14,7 +14,14 @@ public class TokenController : Singleton<TokenController>
 
 	public float extraSpeedPowerUp = 150.0f;
 	float speedBonus = 0;
+
+	public int maxRotationAmount = 3;
+	int rotationAmount = 0;
+	public float penaltySpeedUp = 100.0f;
+
 	int sense = 1;
+
+	float currentAngle = 0f;
 
 	void Start ()
 	{
@@ -24,47 +31,64 @@ public class TokenController : Singleton<TokenController>
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if (!GameManager.Instance.lost) {
+			if (Input.GetKeyDown (KeyCode.Space)) {
 
-			var facesOnCollision = 
-				from face in ScenarioController.Instance.totalFaces
-				where (Vector3.Distance (activeToken.position, face.transform.position)) < collisionRadius
+				var facesOnCollision = 
+					from face in ScenarioController.Instance.totalFaces
+					where (Vector3.Distance (activeToken.position, face.transform.position)) < collisionRadius
 				orderby face.index descending
-				select face;
+					select face;
 
-			foreach (var face in facesOnCollision.ToList()) {
-				currentFace = face;
-				break;
+				foreach (var face in facesOnCollision.ToList()) {
+					currentFace = face;
+					break;
+				}
+
+				if (currentFace != null) {
+					currentAngle = 0;
+					rotationAmount = 0;
+
+					GameManager.Instance.IncreaseScore ();
+					ScenarioController.Instance.ChangeToFace (currentFace.index);
+
+
+					if (currentFace.powerUp == PowerUpType.spin)
+						ChangeRotation ();
+					else if (currentFace.powerUp == PowerUpType.speed)
+						ChangeSpeed (true);
+					else
+						ChangeSpeed (false);
+
+					Transform temp = pivot;
+					pivot = activeToken;
+					activeToken = temp;
+
+					pivot.transform.position = currentFace.transform.position + currentFace.faceDir * 0.65f;
+					activeToken.transform.position = new Vector3 (activeToken.transform.position.x, pivot.transform.position.y, activeToken.transform.position.z);
+
+					activeToken.transform.position = pivot.transform.position + (activeToken.transform.position - pivot.transform.position).normalized * initialDistance;
+
+					currentFace = null;
+				} else {
+					GameManager.Instance.GameOver ();
+					print ("LOSE");
+				}
 			}
+			float angle = (angularSpeed + speedBonus) * sense * Time.deltaTime;
+			activeToken.RotateAround (pivot.position, Vector3.up, angle);
+			currentAngle += angle;
 
-			if (currentFace != null) {
-//				Debug.Log ("The next face " + currentFace.index);
-				ScenarioController.Instance.ChangeToFace (currentFace.index);
-
-				if (currentFace.powerUp == PowerUpType.spin)
-					ChangeRotation ();
-				else if (currentFace.powerUp == PowerUpType.speed)
-					ChangeSpeed (true);
-				else
-					ChangeSpeed (false);
-
-				Transform temp = pivot;
-				pivot = activeToken;
-				activeToken = temp;
-
-				pivot.transform.position = currentFace.transform.position + currentFace.faceDir * 0.65f;
-				activeToken.transform.position = new Vector3 (activeToken.transform.position.x, pivot.transform.position.y, activeToken.transform.position.z);
-
-				activeToken.transform.position = pivot.transform.position + (activeToken.transform.position - pivot.transform.position).normalized * initialDistance;
-
-				currentFace = null;
-			} else {
-				print ("LOSE");
+			if (currentAngle > 360) {
+				rotationAmount++;
+				if (rotationAmount == maxRotationAmount)
+					GameManager.Instance.GameOver ();
+				else {
+					speedBonus += penaltySpeedUp;
+					currentAngle = 0;
+				}
 			}
 		}
-
-		activeToken.RotateAround (pivot.position, Vector3.up, (angularSpeed + speedBonus) * sense * Time.deltaTime);
-	
 	}
 
 	public void SetTokenDirection (FaceDirection direction)

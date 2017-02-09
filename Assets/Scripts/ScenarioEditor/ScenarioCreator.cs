@@ -9,10 +9,12 @@ public class ScenarioCreator : MonoBehaviour
 	public List<Pattern> patterns;
 	private GameObject[] patternPrefabs;
 
-	public int currentFace;
-
-	// Use this for initialization
 	void Start ()
+	{
+		CreateScenario ();
+	}
+
+	void CreateScenario ()
 	{
 		patternPrefabs = Resources.LoadAll <GameObject> ("Patterns");
 
@@ -26,8 +28,5 @@ public class ScenarioCreator : MonoBehaviour
 		}
 
 		ScenarioController.Instance.GetAllFaces (patterns);
-
-		Destroy (this);
 	}
-
 }
