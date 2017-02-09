@@ -13,6 +13,9 @@ public class PatternConstructor : EditorWindow
 	bool creatingCell;
 	bool moveUp;
 
+	int maxPowerUpFaces = 0;
+	float powerUpChance = 0f;
+
 	string[] nextCellDirection = { "Green", "Red", "Blue" };
 	int selection = 1;
 
@@ -20,6 +23,8 @@ public class PatternConstructor : EditorWindow
 	string patternName = "Pattern";
 	PatternConstructorHelper helper;
 
+
+	Vector2 scrollViewPos = Vector2.zero;
 
 	// Add menu named "My Window" to the Window menu
 	[MenuItem ("MyPlugin/Create Pattern")]
@@ -33,8 +38,10 @@ public class PatternConstructor : EditorWindow
 
 	}
 
+
 	void OnGUI ()
 	{
+		scrollViewPos = GUILayout.BeginScrollView (scrollViewPos);
 		GUILayout.Label ("Setting up the pattern", EditorStyles.boldLabel);
 		GUILayout.BeginHorizontal ();
 
@@ -87,16 +94,21 @@ public class PatternConstructor : EditorWindow
 					helper.DeleteLastCell ();
 			
 				GUILayout.EndHorizontal ();
+				EditorGUILayout.Space ();
 
+				GUILayout.Label ("Max number of power-up faces : " + maxPowerUpFaces);
+				maxPowerUpFaces = Mathf.FloorToInt (GUILayout.HorizontalSlider (maxPowerUpFaces, 0, helper.cells.Count));
+
+				GUILayout.Label ("Chance of power-up : " + (int)(powerUpChance * 100) + "%");
+				powerUpChance = GUILayout.HorizontalSlider (powerUpChance, 0f, 1f);
 				EditorGUILayout.Space ();
 
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Name: ");
 				patternName = GUILayout.TextField (patternName, 25);
 				GUILayout.EndHorizontal ();
-
-
 				EditorGUILayout.Space ();
+
 
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button ("Save pattern"))
@@ -112,6 +124,7 @@ public class PatternConstructor : EditorWindow
 				}
 			}
 		}
+		GUILayout.EndScrollView ();
 	}
 
 	void CreateCell (int selection)
@@ -129,19 +142,24 @@ public class PatternConstructor : EditorWindow
 		string prefabPath = "Assets/Resources/Patterns/" + patternName + ".prefab";
 		AssetDatabase.DeleteAsset (prefabPath);
 
-		helper.Save ();
+		helper.Save (patternName, powerUpChance, maxPowerUpFaces);
 
 		DestroyImmediate (helper);
 		PrefabUtility.CreatePrefab (prefabPath, pattern);
-		pattern.name = patternName;
+
+		pattern.SetActive (false);
+
 		pattern = null;
 		selection = 1;
-
+		maxPowerUpFaces = 0;
+		powerUpChance = 0f;
 	}
 
 	void ResetPattern ()
 	{
 		helper.DeleteAllCells ();
 		selection = 1;
+		maxPowerUpFaces = 0;
+		powerUpChance = 0f;
 	}
 }

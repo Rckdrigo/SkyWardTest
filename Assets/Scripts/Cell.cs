@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-	public GameObject nextCellDirection;
+	[HideInInspector] public GameObject nextCellDirection;
 
 	public Face top, right, left;
 

@@ -11,6 +11,8 @@ public class ScenarioController : Singleton<ScenarioController>
 	public int nextFacesWindow = 10;
 	public List<Face> totalFaces = new List<Face> ();
 
+	public Sprite speedTexture, spinTexture;
+
 	List<Face> GetNextFaces (int count)
 	{
 		var nextFaces =
@@ -26,7 +28,7 @@ public class ScenarioController : Singleton<ScenarioController>
 	{
 		this.patterns = patterns;
 		for (int i = 0; i < patterns.Count; i++)
-			totalFaces.AddRange (patterns [i].GetFaces ());
+			totalFaces.AddRange (patterns [i].GetFaces (i));
 
 		for (int i = 0; i < totalFaces.Count; i++)
 			totalFaces [i].index = i;
@@ -36,12 +38,15 @@ public class ScenarioController : Singleton<ScenarioController>
 
 	public void ChangeToFace (int newIndex)
 	{
-		
-		index = newIndex;
-		List<Face> temp = GetNextFaces (nextFacesWindow);
 
-		for (int i = 0; i < temp.Count; i++)
-			temp [i].GetComponent<MeshRenderer> ().material.color = Color.yellow;
+
+		index = newIndex;
+		TokenController.Instance.activeToken.up = totalFaces [index].faceDir;
+//		List<Face> temp = GetNextFaces (nextFacesWindow);
+//
+//		for (int i = 0; i < temp.Count; i++)
+//			temp [i].GetComponent<MeshRenderer> ().material.color = Color.yellow;
+
 
 
 		var previousFaces = 
@@ -51,7 +56,7 @@ public class ScenarioController : Singleton<ScenarioController>
 
 		foreach (var face in previousFaces.ToList()) {
 //			totalFaces.Remove (face);
-			face.GetComponent<MeshRenderer> ().material.color = Color.red;
+//			face.GetComponent<MeshRenderer> ().material.color = Color.red;
 		}
 	}
 		

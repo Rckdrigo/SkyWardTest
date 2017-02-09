@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent (typeof(Pattern))]
 public class PatternConstructorHelper : MonoBehaviour
 {
-
 	public List<GameObject> cells = new List<GameObject> ();
 
 	public void SetNewCell (GameObject cell, int direction, bool moveUp)
@@ -50,10 +49,17 @@ public class PatternConstructorHelper : MonoBehaviour
 		cells.Clear ();
 	}
 
-	public void Save ()
+	public void Save (string name, float powerUpChance, int maxPowerUpFaces)
 	{
+		this.name = name;
+
+		GetComponent<Pattern> ().powerUpChance = powerUpChance;
+		GetComponent<Pattern> ().maxPowerUpFaces = maxPowerUpFaces;
+
 		GetComponent<Pattern> ().cells = cells;
 		GetComponent<Pattern> ().endOfPatternReference = cells [cells.Count - 1].GetComponent<Cell> ().nextCellDirection;
+
+
 	}
 
 	void OnDrawGizmos ()
@@ -69,4 +75,5 @@ public class PatternConstructorHelper : MonoBehaviour
 			Gizmos.DrawRay (cells [cells.Count - 1].transform.position, Vector3.back * 3);
 		}
 	}
+
 }

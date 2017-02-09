@@ -12,6 +12,10 @@ public class TokenController : Singleton<TokenController>
 	Face currentFace = null;
 	float initialDistance = 0;
 
+	public float extraSpeedPowerUp = 150.0f;
+	float speedBonus = 0;
+	int sense = 1;
+
 	void Start ()
 	{
 		initialDistance = Vector3.Distance (pivot.position, activeToken.position);
@@ -34,9 +38,15 @@ public class TokenController : Singleton<TokenController>
 			}
 
 			if (currentFace != null) {
-				Debug.Log ("The next face " + currentFace.index);
+//				Debug.Log ("The next face " + currentFace.index);
 				ScenarioController.Instance.ChangeToFace (currentFace.index);
-				currentFace.GetComponent<MeshRenderer> ().material.color = Color.green;
+
+				if (currentFace.powerUp == PowerUpType.spin)
+					ChangeRotation ();
+				else if (currentFace.powerUp == PowerUpType.speed)
+					ChangeSpeed (true);
+				else
+					ChangeSpeed (false);
 
 				Transform temp = pivot;
 				pivot = activeToken;
@@ -53,7 +63,7 @@ public class TokenController : Singleton<TokenController>
 			}
 		}
 
-		activeToken.RotateAround (pivot.position, Vector3.up, angularSpeed * Time.deltaTime);
+		activeToken.RotateAround (pivot.position, Vector3.up, (angularSpeed + speedBonus) * sense * Time.deltaTime);
 	
 	}
 
@@ -78,4 +88,15 @@ public class TokenController : Singleton<TokenController>
 		pivot.transform.up = newTokenDirection;
 		activeToken.transform.up = newTokenDirection;
 	}
+
+	void ChangeRotation ()
+	{
+		sense *= -1;
+	}
+
+	void ChangeSpeed (bool fast)
+	{
+		speedBonus = fast ? extraSpeedPowerUp : 0f;
+	}
+
 }
