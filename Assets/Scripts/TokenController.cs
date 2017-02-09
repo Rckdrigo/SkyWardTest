@@ -69,8 +69,6 @@ public class TokenController : Singleton<TokenController>
 					currentAngle = 0;
 					rotationAmount = 0;
 
-
-
 					if (currentFace.powerUp == PowerUpType.spin)
 						ChangeRotation ();
 					else if (currentFace.powerUp == PowerUpType.speed)
@@ -81,7 +79,6 @@ public class TokenController : Singleton<TokenController>
 					Transform temp = pivot;
 					pivot = activeToken;
 					activeToken = temp;
-
 					ScenarioController.Instance.ChangeToFace (currentFace.index);
 
 					pivot.transform.position = currentFace.transform.position + currentFace.faceDir * 0.65f;
@@ -92,7 +89,7 @@ public class TokenController : Singleton<TokenController>
 					currentFace = null;
 				} else {
 					GameManager.Instance.GameOver ();
-					print ("LOSE");
+//					print ("LOSE");
 				}
 			}
 			float angle = (angularSpeed + speedBonus) * sense * Time.deltaTime;

@@ -44,25 +44,29 @@ public class ScenarioController : Singleton<ScenarioController>
 
 	public void ChangeToFace (int newIndex)
 	{
-		GameManager.Instance.IncreaseScore ();
+		if (newIndex < index)
+			GameManager.Instance.GameOver ();
+		else {
+			GameManager.Instance.IncreaseScore ();
 
-		index = newIndex;
-		TokenController.Instance.pivot.up = totalFaces [index].faceDir;
+			index = newIndex;
+			TokenController.Instance.pivot.up = totalFaces [index].faceDir;
 
-		List<Face> temp = GetNextFaces (nextFacesWindow);
+			List<Face> temp = GetNextFaces (nextFacesWindow);
 
-		for (int i = 0; i < temp.Count; i++) {
-			StartCoroutine (temp [i].GrowAnimation ());
-		}
+			for (int i = 0; i < temp.Count; i++) {
+				StartCoroutine (temp [i].GrowAnimation ());
+			}
 
-		if (GameManager.Instance.gameStarted) {
-			var previousFaces = 
-				from face in ScenarioController.Instance.totalFaces
-				where face.transform.position.x - 0.75f > TokenController.Instance.pivot.position.x
-				select face;
+			if (GameManager.Instance.gameStarted) {
+				var previousFaces = 
+					from face in ScenarioController.Instance.totalFaces
+					where face.transform.position.x - 0.75f > TokenController.Instance.pivot.position.x
+					select face;
 
-			foreach (var face in previousFaces.ToList()) {
-				StartCoroutine (face.ShrinkAnimation ());
+				foreach (var face in previousFaces.ToList()) {
+					StartCoroutine (face.ShrinkAnimation ());
+				}
 			}
 		}
 	}
