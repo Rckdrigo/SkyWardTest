@@ -56,7 +56,7 @@ public class TokenController : Singleton<TokenController>
 
 				var facesOnCollision = 
 					from face in ScenarioController.Instance.totalFaces
-					where (Vector3.Distance (activeToken.position, face.transform.position)) < collisionRadius && face.gameObject != ScenarioController.Instance.GetCurrentFace ()
+					where (Vector3.Distance (activeToken.position, face.transform.position)) < collisionRadius && face.gameObject != ScenarioController.Instance.GetCurrentFace () && face.gameObject.activeInHierarchy
 					orderby Vector3.Distance(face.transform.position, activeToken.position) descending
 					select face;
 
