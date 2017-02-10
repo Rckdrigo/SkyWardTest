@@ -45,7 +45,7 @@ public class ScenarioController : Singleton<ScenarioController>
 
 	public void ChangeToFace (int newIndex)
 	{
-		if (newIndex < index)
+		if (newIndex < index - 2)
 			GameManager.Instance.GameOver ();
 		else {
 			GameManager.Instance.IncreaseScore ();
@@ -99,5 +99,10 @@ public class ScenarioController : Singleton<ScenarioController>
 		}
 
 		return initialScale;
+	}
+
+	public GameObject GetCurrentFace ()
+	{
+		return totalFaces [index].gameObject;
 	}
 }
